@@ -1,0 +1,25 @@
+{
+  "name": "@redmin_delishaj/react-native-select",
+  "version": "1.0.0",
+  "description": "dropdown list for react-native",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/redmindelishaj/redmin-rect-native-select.git"
+  },
+  "keywords": [
+    "select",
+    "react-native",
+    "dropdown",
+    "list"
+  ],
+  "author": "Redmin Delishaj",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/redmindelishaj/redmin-rect-native-select/issues"
+  },
+  "homepage": "https://github.com/redmindelishaj/redmin-rect-native-select#readme"
+}
