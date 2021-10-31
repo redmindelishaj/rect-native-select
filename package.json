@@ -1,6 +1,6 @@
 {
   "name": "@redmin_delishaj/react-native-select",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "dropdown list for react-native",
   "main": "index.tsx",
   "scripts": {
