@@ -10,7 +10,7 @@ import {
     ViewStyle,
     TextStyle,
 } from "react-native";
-import { SelectItem } from "./";
+import { SelectItem } from "..";
 import { EmptyItem, Item } from "./Default";
 
 interface Props {

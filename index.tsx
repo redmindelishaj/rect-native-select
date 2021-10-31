@@ -8,8 +8,8 @@ import {
     LayoutChangeEvent,
     StyleSheet
 } from "react-native";
-import DropDownView from "./DropDownView";
-import TextView from "./TextView";
+import DropDownView from "./src/DropDownView";
+import TextView from "./src/TextView";
 
 export interface SelectItem {
     text: string
