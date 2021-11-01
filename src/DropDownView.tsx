@@ -11,13 +11,14 @@ import {
     TextStyle,
 } from "react-native";
 import { SelectItem } from "..";
-import { EmptyItem, Item } from "./Default";
+import { DefaultNoDataComponent, DefaultItem } from "./Default";
 
 interface Props {
     data: SelectItem[]
     yPosition: number
     isVisible: boolean
-    selectedItemValue?: any
+    selectedValue?: any
+    search?: boolean
     onItemSelect?: (item: SelectItem) => void
     searchPlaceholder?: string
     maxHeight?: number | string
@@ -26,6 +27,7 @@ interface Props {
     selectedBgStyle?: StyleProp<ViewStyle>
     selectedTextStyle?: StyleProp<TextStyle>
     searchStyle?: StyleProp<TextStyle>
+    noDataComponent?: () => JSX.Element
 }
 
 interface ItemProps {
@@ -38,8 +40,9 @@ const defaultMaxHeight = WindowHeight * 0.6;
 
 const DropDownView = ({
     data,
+    selectedValue,
     isVisible,
-    selectedItemValue,
+    search,
     searchPlaceholder,
     onItemSelect,
     yPosition,
@@ -48,13 +51,13 @@ const DropDownView = ({
     textStyle,
     selectedBgStyle,
     selectedTextStyle,
-    searchStyle
+    searchStyle,
+    noDataComponent,
 }: Props) => {
 
     const [searchText, setSearchText] = useState('');
     const [filteredData, setFilteredData] = useState(data);
-    const selectedItemBgStyle = selectedBgStyle ?? styles.selectedBackground;
-    const selectedItemTextStyle = selectedTextStyle ?? styles.selectedText
+    const NoDataComponent = noDataComponent ? noDataComponent : () => <DefaultNoDataComponent />;
 
     useEffect(() => setFilteredData(data), [data]);
 
@@ -67,14 +70,14 @@ const DropDownView = ({
     const RenderItem = ({ item }: ItemProps) => {
         let itemBackgroundStyle = undefined;
         let itemTextStyle = textStyle;
-        if (item.value === selectedItemValue) {
-            itemBackgroundStyle = selectedItemBgStyle;
-            itemTextStyle = selectedItemTextStyle;
+        if (item.value === selectedValue) {
+            itemBackgroundStyle = selectedBgStyle ?? styles.selectedContainerDefault;
+            itemTextStyle = selectedTextStyle ?? styles.selectedTextDefault;
         }
         const onPress = onItemSelect ? () => onItemSelect(item) : undefined;
         return (
             <TouchableOpacity onPress={onPress} style={[styles.dropdownItem, itemBackgroundStyle]}>
-                <Item text={item.text} style={itemTextStyle} />
+                <DefaultItem text={item.text} style={itemTextStyle} />
             </TouchableOpacity>
         );
     }
@@ -87,16 +90,19 @@ const DropDownView = ({
                 styles.mainContainer
             ]}
         >
-            <View style={styles.searchContainer}>
-                <TextInput
-                    style={searchStyle ?? styles.searchDefault}
-                    placeholder={searchPlaceholder ?? 'Search...'}
-                    onChangeText={filterData}
-                    value={searchText}
-                />
-            </View>
-            <View style={styles.spacer} />
-            { filteredData.length === 0 ? <EmptyItem /> :
+            { search &&
+                <View style={styles.searchContainer}>
+                    <TextInput
+                        style={searchStyle ?? styles.searchDefault}
+                        placeholder={searchPlaceholder ?? 'Search...'}
+                        onChangeText={filterData}
+                        value={searchText}
+                    />
+                </View>
+            }
+            { filteredData.length === 0 ?
+                <NoDataComponent />
+            :
                 <FlatList
                     keyboardShouldPersistTaps={"always"}
                     nestedScrollEnabled
@@ -116,20 +122,9 @@ const styles = StyleSheet.create({
         position: 'absolute',
         width: '100%',
     },
-    dropdownDefault: {
-        paddingVertical: WindowWidth * 0.02,
-        backgroundColor: 'white',
-        borderRadius: 5,
-    },
     searchContainer: {
         paddingHorizontal: WindowWidth * 0.04,
-    },
-    searchDefault: {
-        borderBottomWidth: 1,
-        borderBottomColor: '#a0a0a0',
-    },
-    spacer: {
-        height: WindowHeight * 0.01,
+        paddingBottom: WindowHeight * 0.01,
     },
     dropdownItem: {
         paddingVertical: WindowHeight * 0.02,
@@ -138,10 +133,19 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
     },
-    selectedBackground: {
+    dropdownDefault: {
+        paddingVertical: WindowWidth * 0.02,
+        backgroundColor: 'white',
+        borderRadius: 5,
+    },
+    searchDefault: {
+        borderBottomWidth: 1,
+        borderBottomColor: '#a0a0a0',
+    },
+    selectedContainerDefault: {
         backgroundColor: '#005085',
     },
-    selectedText: {
+    selectedTextDefault: {
         color: 'white',
     },
 });
