@@ -8,30 +8,47 @@ import {
     LayoutChangeEvent,
     StyleSheet
 } from "react-native";
-import DropDownView from "./src/DropDownView";
-import TextView from "./src/TextView";
+import DropDown from "./src/DropDown";
+import TextBox from "./src/TextBox";
 
 export interface SelectItem {
     text: string
     value: any
+}
+export interface SelectConfig {
+    fontSize?: number
+    fontFamily?: string
+    fontWeight?: "normal" | "bold" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900"
+    textColor?: string
+    backgroundColor?: string
+    selectedFontWeight?: "normal" | "bold" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900"
+    selectedFontFamily?: string
+    selectedTextColor?: string
+    selectedBackgroundColor?: string
+    placeholderTextColor?: string
+    disabledTextColor?: string
+    borderRadius?: number
 }
 
 interface Props {
     data?: SelectItem[]
     value?: SelectItem
     onSelect?: (value?: any) => void
-    placeholder?: string
-    searchPlaceholder?: string
-    search?: boolean
     isVisible?: boolean
     isDisabled?: boolean
+    search?: boolean
+    placeholder?: string
+    searchPlaceholder?: string
+    noDataText?: string
+    spacing?: boolean
     width?: number | string
     dropdownHeight?: number | string
+    config?: SelectConfig
     textBoxStyle?: StyleProp<ViewStyle>
     textBoxTextStyle?: StyleProp<TextStyle>
     dropdownStyle?: StyleProp<ViewStyle>
     optionTextStyle?: StyleProp<TextStyle>
-    selectedBgStyle?: StyleProp<ViewStyle>
+    selectedBackgroundStyle?: StyleProp<ViewStyle>
     selectedTextStyle?: StyleProp<TextStyle>
     searchStyle?: StyleProp<TextStyle>
     caretIcon?: () => JSX.Element
@@ -44,6 +61,7 @@ const Select = (props: Props) => {
     const [visible, setVisible] = useState(false);
     const isVisible = props.isVisible ?? visible;
     const [selectedItemText, setSelectedItemText] = useState<string | undefined>();
+    const spacing = props.spacing ?? true;
 
     const onTextBoxClick = () => {
         if (props.isDisabled) return;
@@ -59,11 +77,12 @@ const Select = (props: Props) => {
 
     return (
         <View style={{ width: props.width ?? '90%' }}>
-            <TextView
+            <TextBox
                 text={selectedItemText}
                 placeholder={props.placeholder}
                 onclick={onTextBoxClick}
                 onXClick={clearSelection}
+                config={props.config}
                 containerStyle={props.textBoxStyle}
                 textStyle={props.textBoxTextStyle}
                 isDropdownVisible={isVisible}
@@ -71,9 +90,9 @@ const Select = (props: Props) => {
                 caretIcon={props.caretIcon}
                 clearIcon={props.clearIcon}
             />
-            <View style={styles.spacer} />
+            { spacing && <View style={styles.spacer} /> }
             <View onLayout={getDropdownPos} />
-            <DropDownView
+            <DropDown
                 data={props.data ?? []}
                 isVisible={isVisible}
                 search={props.search}
@@ -81,10 +100,12 @@ const Select = (props: Props) => {
                 selectedValue={props.value}
                 onItemSelect={onItemSelect}
                 searchPlaceholder={props.searchPlaceholder}
+                noDataText={props.noDataText}
                 maxHeight={props.dropdownHeight}
+                config={props.config}
                 backgroundStyle={props.dropdownStyle}
                 textStyle={props.optionTextStyle}
-                selectedBgStyle={props.selectedBgStyle}
+                selectedBgStyle={props.selectedBackgroundStyle}
                 selectedTextStyle={props.selectedTextStyle}
                 searchStyle={props.searchStyle}
             />
