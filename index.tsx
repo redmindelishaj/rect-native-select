@@ -16,20 +16,21 @@ export interface SelectItem {
     value: any
 }
 export interface SelectConfig {
+    backgroundColor?: string
+    textColor?: string
     fontSize?: number
     fontFamily?: string
     fontWeight?: "normal" | "bold" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900"
-    textColor?: string
-    backgroundColor?: string
-    selectedFontWeight?: "normal" | "bold" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900"
-    selectedFontFamily?: string
-    selectedTextColor?: string
     selectedBackgroundColor?: string
+    selectedTextColor?: string
+    selectedFontFamily?: string
+    selectedFontWeight?: "normal" | "bold" | "100" | "200" | "300" | "400" | "500" | "600" | "700" | "800" | "900"
     placeholderTextColor?: string
     disabledTextColor?: string
+    borderWidth?: number
+    borderColor?: string
     borderRadius?: number
 }
-
 interface Props {
     data?: SelectItem[]
     value?: SelectItem
@@ -92,23 +93,24 @@ const Select = (props: Props) => {
             />
             { spacing && <View style={styles.spacer} /> }
             <View onLayout={getDropdownPos} />
-            <DropDown
-                data={props.data ?? []}
-                isVisible={isVisible}
-                search={props.search}
-                yPosition={yPosition}
-                selectedValue={props.value}
-                onItemSelect={onItemSelect}
-                searchPlaceholder={props.searchPlaceholder}
-                noDataText={props.noDataText}
-                maxHeight={props.dropdownHeight}
-                config={props.config}
-                backgroundStyle={props.dropdownStyle}
-                textStyle={props.optionTextStyle}
-                selectedBgStyle={props.selectedBackgroundStyle}
-                selectedTextStyle={props.selectedTextStyle}
-                searchStyle={props.searchStyle}
-            />
+            { isVisible &&
+                <DropDown
+                    data={props.data ?? []}
+                    search={props.search}
+                    yPosition={yPosition}
+                    selectedValue={props.value}
+                    onItemSelect={onItemSelect}
+                    searchPlaceholder={props.searchPlaceholder}
+                    noDataText={props.noDataText}
+                    maxHeight={props.dropdownHeight}
+                    config={props.config}
+                    backgroundStyle={props.dropdownStyle}
+                    textStyle={props.optionTextStyle}
+                    selectedBgStyle={props.selectedBackgroundStyle}
+                    selectedTextStyle={props.selectedTextStyle}
+                    searchStyle={props.searchStyle}
+                />
+            }
         </View>
     );
 }

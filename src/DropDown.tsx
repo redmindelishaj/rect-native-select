@@ -5,18 +5,17 @@ import {
     TextInput,
     TouchableOpacity,
     View,
-    Dimensions,
     StyleProp,
     ViewStyle,
     TextStyle,
 } from "react-native";
 import { SelectConfig, SelectItem } from "..";
-import { DefaultNoDataComponent, DefaultItem } from "./Default";
+import { getConfigContainerStyle, getConfigTextStyle, WindowHeight, WindowWidth } from "./common";
+import { DefaultNoDataComponent, DefaultItem } from "./DefaultComponents";
 
 interface Props {
     data: SelectItem[]
     yPosition: number
-    isVisible: boolean
     selectedValue?: any
     search?: boolean
     onItemSelect?: (item: SelectItem) => void
@@ -31,34 +30,32 @@ interface Props {
     searchStyle?: StyleProp<TextStyle>
     noDataComponent?: () => JSX.Element
 }
-
 interface ItemProps {
     item: SelectItem
 }
 
-const WindowHeight = Dimensions.get("window").height;
-const WindowWidth = Dimensions.get("window").width;
 const defaultMaxHeight = WindowHeight * 0.6;
 const defaultSelectedBg = '#005085';
 const defaultSelectedTextColor = 'white';
 const defaultPlaceholderColor = '#a0a0a0';
 
-const getConfigContainerStyle = (config?: SelectConfig): StyleProp<ViewStyle> => {
-    if (config == null) return undefined;
-    const { backgroundColor, borderRadius } = config;
-    let configBgStyle: StyleProp<ViewStyle> = {
-        backgroundColor: config?.backgroundColor,
-        borderRadius: config?.borderRadius,
-    }
-    if (backgroundColor == null) delete configBgStyle.backgroundColor;
-    if (borderRadius == null) delete configBgStyle.borderRadius;
-    return configBgStyle;
-}
+const getSelectedBgStyle = (config?: SelectConfig): StyleProp<ViewStyle> => ({
+    backgroundColor: config?.selectedBackgroundColor ?? defaultSelectedBg
+});
+const getSelectedTextStyle = (config?: SelectConfig): StyleProp<TextStyle> => ({
+    fontSize: config?.fontSize,
+    fontFamily: config?.selectedFontFamily ?? config?.fontFamily,
+    color: config?.selectedTextColor ?? defaultSelectedTextColor,
+    fontWeight: config?.selectedFontWeight,
+});
+const getDefaultSearchStyle = (config?: SelectConfig) => ({
+    borderBottomWidth: 1,
+    borderBottomColor: config?.placeholderTextColor ?? defaultPlaceholderColor,
+});
 
 const DropDown = ({
     data,
     selectedValue,
-    isVisible,
     search,
     searchPlaceholder,
     noDataText,
@@ -86,19 +83,9 @@ const DropDown = ({
     }
 
     const configBgStyle: StyleProp<ViewStyle> = getConfigContainerStyle(config);
-    const configSelectedBgStyle: StyleProp<ViewStyle> = { backgroundColor: config?.selectedBackgroundColor ?? defaultSelectedBg };
-    const configTextStyle: StyleProp<TextStyle> = {
-        fontSize: config?.fontSize,
-        fontFamily: config?.fontFamily,
-        fontWeight: config?.fontWeight,
-        color: config?.textColor,
-    };
-    const configSelectedTextStyle: StyleProp<TextStyle> = {
-        fontSize: config?.fontSize,
-        fontFamily: config?.selectedFontFamily ?? config?.fontFamily,
-        color: config?.selectedTextColor ?? defaultSelectedTextColor,
-        fontWeight: config?.selectedFontWeight,
-    };
+    const configTextStyle: StyleProp<TextStyle> = getConfigTextStyle(config);
+    const configSelectedBgStyle: StyleProp<ViewStyle> = getSelectedBgStyle(config);
+    const configSelectedTextStyle: StyleProp<TextStyle> = getSelectedTextStyle(config);
 
     const Option = ({ item }: ItemProps) => {
         let itemBackgroundStyle = undefined;
@@ -110,7 +97,7 @@ const DropDown = ({
         const onPress = onItemSelect ? () => onItemSelect(item) : undefined;
         return (
             <TouchableOpacity onPress={onPress} style={[styles.dropdownItemContainer, itemBackgroundStyle]}>
-                <DefaultItem text={item.text} style={itemTextStyle} />
+                <DefaultItem text={item.text} textStyle={itemTextStyle} />
             </TouchableOpacity>
         );
     }
@@ -124,12 +111,11 @@ const DropDown = ({
         styles.mainContainer,
     ];
     const searchInputStyle: StyleProp<TextStyle> = [
-        styles.searchDefault,
+        getDefaultSearchStyle(config),
         configTextStyle,
-        searchStyle
+        searchStyle,
     ];
 
-    if (!isVisible) return null;
     return (
         <View style={containerStyle}>
             { search &&
@@ -184,9 +170,6 @@ const styles = StyleSheet.create({
     searchDefault: {
         borderBottomWidth: 1,
         borderBottomColor: '#a0a0a0',
-    },
-    selectedTextDefault: {
-        color: 'white',
     },
 });
 
