@@ -35,6 +35,7 @@ interface Props {
     data?: SelectItem[]
     value?: SelectItem
     onSelect?: (value?: any) => void
+    onClick?: () => void
     isVisible?: boolean
     isDisabled?: boolean
     search?: boolean
@@ -67,6 +68,7 @@ const Select = (props: Props) => {
     const onTextBoxClick = () => {
         if (props.isDisabled) return;
         setVisible(!visible);
+        if (props.onClick) props.onClick();
     }
     const onItemSelect = (item?: SelectItem) => {
         setSelectedItemText(item?.text);
