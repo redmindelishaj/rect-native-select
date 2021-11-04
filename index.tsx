@@ -45,6 +45,7 @@ interface Props {
     spacing?: boolean
     width?: number | string
     dropdownHeight?: number | string
+    zIndex?: number
     config?: SelectConfig
     textBoxStyle?: StyleProp<ViewStyle>
     textBoxTextStyle?: StyleProp<TextStyle>
@@ -79,7 +80,7 @@ const Select = (props: Props) => {
     const getDropdownPos = (event: LayoutChangeEvent) => setYPosition(event.nativeEvent.layout.y);
 
     return (
-        <View style={{ width: props.width ?? '90%' }}>
+        <View style={{ width: props.width ?? '90%', zIndex: props.zIndex }}>
             <TextBox
                 text={selectedItemText}
                 placeholder={props.placeholder}
